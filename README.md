@@ -22,7 +22,7 @@ Both containers (`rest-api` and `grpc-service`) should print logs showing they a
 ## Testing
 1. Store a new key-value pair (POST)
 ```bash
-  curl -X POST http://localhost:8080/kv -H "Content-Type: application/json" -d   '{"key":"city","value":"newyork"}'
+  curl -X POST http://localhost:8080/kv -H "Content-Type: application/json" -d '{"key":"city","value":"newyork"}'
 ```
 2. Retrieve a value for a given key (GET)
 ```bash
