@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package kvstore;
+
+option go_package = "github.com/macdeath-aa/kv-store/proto/kvstore";
+
+// The KV Store service definition
+service KVStore {
+  rpc Set(SetRequest) returns (SetResponse);
+  rpc Get(GetRequest) returns (GetResponse);
+  rpc Delete(DeleteRequest) returns (DeleteResponse);
+}
+
+// Set operation
+message SetRequest {
+  string key = 1;
+  string value = 2;
+}
+
+message SetResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// Get operation
+message GetRequest {
+  string key = 1;
+}
+
+message GetResponse {
+  string value = 1;
+  bool found = 2;
+}
+
+// Delete operation
+message DeleteRequest {
+  string key = 1;
+}
+
+message DeleteResponse {
+  bool success = 1;
+}

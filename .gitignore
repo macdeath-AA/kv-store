@@ -1,0 +1,4 @@
+# Don't commit binaries, build artifact, etc.
+**/*.exe
+.env
+build/

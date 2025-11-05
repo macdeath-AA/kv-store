@@ -1,0 +1,18 @@
+services:
+  grpc-service:
+    build:
+      context: .
+      dockerfile: grpc-service/Dockerfile
+    ports:
+      - "50051:50051"
+
+  rest-api:
+    build: 
+      context: . 
+      dockerfile: rest-api/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - grpc-service
+    environment:
+      GRPC_ADDR: grpc-service:50051
