@@ -18,7 +18,7 @@ const grpcAddr = "grpc-service:50051"
 func main() {
 	router := gin.Default()
 
-	// Connect to gRPC backend
+	// connect to gRPC backend
 	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Failed to connect to gRPC backend: %v", err)
@@ -26,7 +26,7 @@ func main() {
 	defer conn.Close()
 	client := pb.NewKVStoreClient(conn)
 
-	// Route: Set key-value
+	// set key-value
 	router.POST("/kv", func(c *gin.Context) {
 		var req struct {
 			Key   string `json:"key"`
@@ -46,7 +46,7 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"success": resp.Success, "message": resp.Message})
 	})
 
-	// Route: Get value by key
+	// get value by key
 	router.GET("/kv/:key", func(c *gin.Context) {
 		key := c.Param("key")
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
@@ -59,7 +59,7 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"key": key, "value": resp.Value, "found": resp.Found})
 	})
 
-	// Route: Delete key
+	// delete key
 	router.DELETE("/kv/:key", func(c *gin.Context) {
 		key := c.Param("key")
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
@@ -72,7 +72,7 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"success": resp.Success})
 	})
 
-	// Start server
+	// start server
 	log.Println("REST API listening on :8080")
 	router.Run(":8080")
 }

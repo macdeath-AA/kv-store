@@ -11,14 +11,14 @@ import (
 	"google.golang.org/grpc"
 )
 
-// Server struct implements the KVStore service
+// erver struct implements the KVStore service
 type server struct {
 	pb.UnimplementedKVStoreServer
 	store map[string]string
-	mu    sync.RWMutex // Thread-safe map access
+	mu    sync.RWMutex // mutex for concurrent access
 }
 
-// Set stores a key-value pair
+// store key-val pair in the map
 func (s *server) Set(ctx context.Context, req *pb.SetRequest) (*pb.SetResponse, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -32,7 +32,7 @@ func (s *server) Set(ctx context.Context, req *pb.SetRequest) (*pb.SetResponse, 
 	}, nil
 }
 
-// Get retrieves a value for a given key
+// retrieve value for a given key
 func (s *server) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetResponse, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -46,7 +46,7 @@ func (s *server) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetResponse, 
 	}, nil
 }
 
-// Delete removes a key from the store
+// delete a key
 func (s *server) Delete(ctx context.Context, req *pb.DeleteRequest) (*pb.DeleteResponse, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -63,26 +63,26 @@ func (s *server) Delete(ctx context.Context, req *pb.DeleteRequest) (*pb.DeleteR
 }
 
 func main() {
-	// Create TCP listener on port 50051
+	// TCP listener on port 50051
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	// Create gRPC server
+	// create gRPC server
 	grpcServer := grpc.NewServer()
 
-	// Create our KV store server with empty map
+	// create KV store server with empty map
 	kvServer := &server{
 		store: make(map[string]string),
 	}
 
-	// Register our service
+	// register service w gRPC server
 	pb.RegisterKVStoreServer(grpcServer, kvServer)
 
 	fmt.Println("gRPC KV Store server listening on :50051")
 	
-	// Start serving
+	// start serving requests
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
